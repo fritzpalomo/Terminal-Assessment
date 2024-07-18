@@ -1,0 +1,198 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.awt.event.*;
+
+public class EmployeeManagementGUI extends javax.swing.JFrame {
+
+    private JButton btnCreate;
+    private JButton btnUpdate;
+    private JButton btnDelete;
+    private JScrollPane jScrollPane1;
+    private JTable tblEmployees;
+
+    public EmployeeManagementGUI() {
+        initComponents();
+        fetchEmployees(); // Fetch employees from database when form is loaded
+    }
+
+    private void initComponents() {
+        btnCreate = new JButton();
+        btnUpdate = new JButton();
+        btnDelete = new JButton();
+        jScrollPane1 = new JScrollPane();
+        tblEmployees = new JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MotorPH Employee Management");
+
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        tblEmployees.setModel(new DefaultTableModel(
+            new Object [][] {
+                // Sample data rows
+            },
+            new String [] {
+                "ID", "Name", "Age", "Position"
+            }
+        ));
+        jScrollPane1.setViewportView(tblEmployees);
+
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnCreate)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdate)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCreate)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnDelete))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        pack();
+    }
+
+    private void fetchEmployees() {
+        DefaultTableModel model = (DefaultTableModel) tblEmployees.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        try {
+            // Establish connection to MySQL database
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/MotorPHEmployeeDB", "username", "password");
+
+            // Execute query to retrieve employees
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM employees");
+
+            // Iterate through result set and add rows to table model
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int age = rs.getInt("age");
+                String position = rs.getString("position");
+
+                model.addRow(new Object[]{id, name, age, position});
+            }
+
+            // Close resources
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error fetching employees: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void btnCreateActionPerformed(ActionEvent evt) {
+        // Code to open a create employee dialog/form
+        CreateEmployeeDialog createDialog = new CreateEmployeeDialog(this, true);
+        createDialog.setVisible(true);
+
+        // Refresh table after creating employee (optional)
+        fetchEmployees();
+    }
+
+    private void btnUpdateActionPerformed(ActionEvent evt) {
+        int selectedRowIndex = tblEmployees.getSelectedRow();
+        if (selectedRowIndex != -1) {
+            // Code to open an update employee dialog/form
+            UpdateEmployeeDialog updateDialog = new UpdateEmployeeDialog(this, true, tblEmployees);
+            updateDialog.setVisible(true);
+
+            // Refresh table after updating employee (optional)
+            fetchEmployees();
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a row to update.", "Update Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void btnDeleteActionPerformed(ActionEvent evt) {
+        int selectedRowIndex = tblEmployees.getSelectedRow();
+        if (selectedRowIndex != -1) {
+            int employeeId = (int) tblEmployees.getValueAt(selectedRowIndex, 0);
+
+            try {
+                // Establish connection to MySQL database
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/MotorPHEmployeeDB", "username", "password");
+
+                // Execute delete query
+                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM employees WHERE id = ?");
+                pstmt.setInt(1, employeeId);
+                pstmt.executeUpdate();
+
+                // Close resources
+                pstmt.close();
+                conn.close();
+
+                // Remove row from table model
+                DefaultTableModel model = (DefaultTableModel) tblEmployees.getModel();
+                model.removeRow(selectedRowIndex);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error deleting employee: " + ex.getMessage(), "Delete Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a row to delete.", "Delete Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EmployeeManagementGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EmployeeManagementGUI().setVisible(true);
+            }
+        });
+    }
+}
