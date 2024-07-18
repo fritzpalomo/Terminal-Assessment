@@ -1,99 +1,93 @@
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.event.*;
 
 public class LoginGUI extends javax.swing.JFrame {
+
+    private JLabel lblUsername;
+    private JTextField txtUsername;
+    private JLabel lblPassword;
+    private JPasswordField txtPassword;
+    private JButton btnLogin;
 
     public LoginGUI() {
         initComponents();
     }
 
-    // Method to perform login authentication
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-
-        // Sample credentials (you can replace this with your authentication logic)
-        String validUsername = "admin";
-        String validPassword = "password";
-
-        if (username.equals(validUsername) && password.equals(validPassword)) {
-            JOptionPane.showMessageDialog(this, "Login Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            // Open MainAppGUI upon successful login
-            MainAppGUI mainApp = new MainAppGUI();
-            mainApp.setVisible(true);
-            this.dispose(); // Close the login window
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-            // Clear password field upon unsuccessful login attempt
-            passwordField.setText("");
-        }
-    }
-
-    // Auto-generated code by NetBeans
     private void initComponents() {
-
-        usernameLabel = new javax.swing.JLabel();
-        passwordLabel = new javax.swing.JLabel();
-        usernameField = new javax.swing.JTextField();
-        passwordField = new javax.swing.JPasswordField();
-        loginButton = new javax.swing.JButton();
+        lblUsername = new JLabel();
+        txtUsername = new JTextField();
+        lblPassword = new JLabel();
+        txtPassword = new JPasswordField();
+        btnLogin = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login Form");
+        setTitle("MotorPH Employee Application - Login");
 
-        usernameLabel.setText("Username:");
+        lblUsername.setText("Username:");
+        lblPassword.setText("Password:");
 
-        passwordLabel.setText("Password:");
-
-        loginButton.setText("Login");
-        loginButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
+        btnLogin.setText("Login");
+        btnLogin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnLoginActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(usernameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(passwordLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(loginButton)
-                            .addComponent(passwordField))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsername)
+                    .addComponent(lblPassword))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(txtUsername, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPassword, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLogin))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usernameLabel)
-                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordLabel)
-                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(loginButton)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsername)
+                    .addComponent(txtUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPassword)
+                    .addComponent(txtPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnLogin)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
     }
 
-    // Variables declaration - do not modify                     
-    private javax.swing.JButton loginButton;
-    private javax.swing.JPasswordField passwordField;
-    private javax.swing.JLabel passwordLabel;
-    private javax.swing.JTextField usernameField;
-    private javax.swing.JLabel usernameLabel;
-    // End of variables declaration                   
+    private void btnLoginActionPerformed(ActionEvent evt) {
+        String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
+
+        // Perform authentication (for simplicity, hardcoded credentials)
+        if (username.equals("admin") && password.equals("password")) {
+            // Open main application window if login successful
+            EmployeeManagementGUI employeeManagementGUI = new EmployeeManagementGUI();
+            employeeManagementGUI.setVisible(true);
+            this.dispose(); // Close login window
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new LoginGUI().setVisible(true);
+            }
+        });
+    }
 }
